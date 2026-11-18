@@ -60,7 +60,7 @@
     </div>
 
     <!-- Main Form -->
-    <form id="order-form" class="max-w-2xl mx-auto px-4 pb-12" novalidate>
+    <form id="order-form" class="max-w-2xl mx-auto px-4 pb-12" novalidate data-webhook-endpoint="https://api.u2lighter.com/api/orders">
         <!-- Step 1: Design Input -->
         <div class="step active" id="step1" data-step="1">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
@@ -582,7 +582,9 @@
             // Simulate API call
             try {
                 // In production, this would call your webhook endpoint
-                const response = await fetch('/api/orders', {
+                const webhookEndpoint = document.getElementById('order-form').dataset.webhookEndpoint || '/api/orders';
+
+                const response = await fetch(webhookEndpoint, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
