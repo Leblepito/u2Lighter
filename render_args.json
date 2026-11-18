@@ -1,16 +1,8 @@
 {
-  "--start-phi": -30.0,
-  "--direction": -1,
-  "--profile": "label",
-  "--lens": 100.0,
-  "--elev": 9.0,
-  "--light-scale": 0.25,
-  "--margin": 0.05,
-  "--seconds": 9.0,
-  "--samples": 160,
-  "--noise": 0.02,
-  "--res": "1440x1920",
-  "--pct": 100,
+  "--start-phi": -25.0,
+  "--lens": 95.0,
+  "--elev": 10.0,
+  "--light-scale": 0.28,
   "_marketing": {
     "hero_angles": [
       "front",
@@ -35,11 +27,11 @@
       "logo_path": "branding/logo.svg",
       "tagline": "Light your style",
       "colors": {
-        "primary": "#F28AB4",
-        "secondary": "#1A1A2E",
-        "accent": "#FFD700"
+        "primary": "#242225",
+        "secondary": "#F4DFC4",
+        "accent": "#F8C32B"
       }
     }
   },
-  "_figure_id": "panter_v1"
+  "_figure_id": "wolf_v1"
 }
