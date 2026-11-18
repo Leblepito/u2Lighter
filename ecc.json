@@ -1,0 +1,112 @@
+{
+  "version": "1.0",
+  "project": "u2Lighter",
+  "description": "Custom 3D-printed lighter sleeve pipeline with ECC (gstack) integration",
+  "ecc": {
+    "version": "1.0",
+    "gstack_path": ".ecc/gstack",
+    "update_channel": "stable",
+    "hooks": {
+      "pre-commit": ["gstack-hooks"],
+      "pre-push": ["gstack-review"]
+    },
+    "skills": {
+      "enabled": [
+        "office-hours",
+        "plan-ceo-review",
+        "plan-eng-review",
+        "plan-design-review",
+        "plan-devex-review",
+        "review",
+        "qa",
+        "ship",
+        "cso",
+        "document-generate",
+        "document-release",
+        "retro",
+        "learn"
+      ],
+      "custom_skills": [
+        "u2lighter-geometry",
+        "u2lighter-render",
+        "u2lighter-marketing",
+        "u2lighter-automation"
+      ]
+    },
+    "agents": {
+      "default": "claude",
+      "fallback": ["codex", "cursor"]
+    },
+    "review_pipeline": {
+      "stages": [
+        "think",
+        "plan",
+        "build",
+        "review",
+        "test",
+        "ship",
+        "reflect"
+      ],
+      "auto_plan": true,
+      "auto_ship": false
+    },
+    "integrations": {
+      "graphify": {
+        "enabled": true,
+        "mode": "local",
+        "output": ".ecc/graphify",
+        "auto_update": true
+      },
+      "superpowers": {
+        "enabled": true,
+        "mode": "methodology",
+        "spec_driven": true,
+        "tdd": true,
+        "subagent_workflow": true
+      },
+      "claude_mem": {
+        "enabled": true,
+        "memory_path": "~/.claude-mem",
+        "sync": "opt-in"
+      }
+    },
+    "ci_cd": {
+      "github_actions": true,
+      "auto_review": true,
+      "auto_qa": true,
+      "auto_ship": false
+    }
+  },
+  "u2lighter": {
+    "pipeline": {
+      "geometry": "pipeline/geometry/",
+      "render": "pipeline/render/",
+      "marketing": "pipeline/render/",
+      "automation": "automation/",
+      "business": "business/",
+      "marketing_auto": "marketing/"
+    },
+    "design_pack": {
+      "schema": "design_pack_schema.json",
+      "template": "design_pack/template.json",
+      "examples": ["design_pack/panter_v1.json"]
+    },
+    "variant_testing": {
+      "matrix": "variant_matrix.json",
+      "builder": "build_variants.py",
+      "ab_testing": "marketing/ab_test_framework.py"
+    },
+    "custom_orders": {
+      "form": "automation/custom_order_form.html",
+      "webhook": "automation/webhook_handler.py",
+      "delivery": "automation/delivery_notify.py",
+      "supabase": "automation/supabase_schema.sql"
+    },
+    "marketing_automation": {
+      "calendar": "marketing/content_calendar.yaml",
+      "assets": "marketing/asset_generator.py",
+      "ab_tests": "marketing/ab_test_framework.py",
+      "ugc": "marketing/ugc_pipeline.py"
+    }
+  }
+}
