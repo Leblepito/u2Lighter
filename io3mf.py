@@ -136,7 +136,7 @@ def write_3mf(out_path, objects, materials, metadata_dir=None, title='', applica
     w('</basematerials>\n')
     for k, o in enumerate(objects):
         oid = k + 1
-        w(f'<object id="{oid}" type="model" name="{_esc(o["name"])}" pid="{mid}" pindex="{int(o.get('pindex', 0))}"><mesh><vertices>')
+        w(f'<object id="{oid}" type="model" name="{_esc(o["name"])}" pid="{mid}" pindex="{int(o.get("pindex", 0))}"><mesh><vertices>')
         V = np.asarray(o['V'])
         lines = ['<vertex x="%.6f" y="%.6f" z="%.6f"/>' % tuple(v) for v in V]
         w(''.join(lines))

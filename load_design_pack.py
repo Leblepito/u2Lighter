@@ -24,7 +24,7 @@ except ImportError:
     sys.exit(1)
 
 HERE = Path(__file__).resolve().parent
-PROJECT_ROOT = HERE.parent.parent.parent
+PROJECT_ROOT = HERE.parent
 SCHEMA_PATH = HERE / "design_pack_schema.json"
 DEFAULT_CONFIG_PATH = HERE / "config.json"
 
@@ -124,7 +124,7 @@ def main():
     design_pack_path = Path(args.design_pack)
     if not design_pack_path.is_absolute():
         # project root is 2 levels up from pipeline/geometry/ (pipeline/geometry -> pipeline -> u2Lighter)
-        project_root = HERE.parent.parent
+        project_root = HERE
         design_pack_path = project_root / design_pack_path
     design_pack = load_json(design_pack_path)
 

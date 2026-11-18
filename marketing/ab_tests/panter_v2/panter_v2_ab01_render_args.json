@@ -1,0 +1,35 @@
+{
+  "figure_id": "panter_v2",
+  "render_args": {
+    "start_phi": 0,
+    "direction": -1,
+    "profile": "constant",
+    "lens": 85,
+    "elev": 5,
+    "light_scale": 0.2,
+    "margin": 0.05,
+    "seconds": 9.0,
+    "samples": 160,
+    "noise": 0.02,
+    "res": "1440x1920",
+    "pct": 100,
+    "no_lighter": false
+  },
+  "tracking": {
+    "utm_source": "ab_test",
+    "utm_medium": "social",
+    "utm_campaign": "panter_v2_ab01",
+    "utm_content": "variant_1"
+  },
+  "meta": {
+    "created_at": "2026-11-18T05:35:10.161887",
+    "test_type": "render_variant",
+    "axes_tested": {
+      "start_phi": 0,
+      "lens": 85,
+      "light_scale": 0.2,
+      "elev": 5,
+      "profile": "constant"
+    }
+  }
+}

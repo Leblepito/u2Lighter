@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Your Own Lighter Sleeve | u2Lighter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .drop-zone { border: 2px dashed #e5e7eb; transition: all 0.2s; }
+        .drop-zone.active { border-color: #f472b6; background: #fdf2f8; }
+        .drop-zone.has-file { border-color: #22c55e; background: #f0fdf4; }
+        .preview-img { max-height: 200px; object-fit: contain; }
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .progress-step { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #d1d5db; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+        .progress-step.active { border-color: #f472b6; background: #f472b6; color: white; }
+        .progress-step.completed { border-color: #22c55e; background: #22c55e; color: white; }
+        .progress-line { flex: 1; height: 2px; background: #d1d5db; }
+        .progress-line.completed { background: #22c55e; }
+        .color-swatch { width: 40px; height: 40px; border-radius: 8px; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+        .color-swatch.selected { border-color: #111827; transform: scale(1.1); box-shadow: 0 0 0 3px #fce7f3; }
+        .pin-config-btn { padding: 12px 16px; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+        .pin-config-btn.selected { border-color: #f472b6; background: #fdf2f8; }
+        .btn-primary { background: #ec4899; color: white; }
+        .btn-primary:hover { background: #db2777; }
+        .btn-primary:disabled { background: #fbcfe8; cursor: not-allowed; }
+        .btn-secondary { background: white; color: #374151; border: 1px solid #d1d5db; }
+        .btn-secondary:hover { background: #f9fafb; }
+        .toast { position: fixed; bottom: 24px; right: 24px; padding: 16px 24px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); z-index: 1000; animation: slideIn 0.3s; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        .toast.success { background: #22c55e; color: white; }
+        .toast.error { background: #ef4444; color: white; }
+        .toast.info { background: #3b82f6; color: white; }
+        .skeleton { background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Progress Indicator -->
+    <div class="max-w-2xl mx-auto px-4 py-6">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-4">
+                <div class="progress-step active" id="step1-indicator">1</div>
+                <div class="progress-line" id="line1"></div>
+                <div class="progress-step" id="step2-indicator">2</div>
+                <div class="progress-line" id="line2"></div>
+                <div class="progress-step" id="step3-indicator">3</div>
+            </div>
+            <div class="hidden sm:flex items-center gap-2 text-sm text-gray-500">
+                <span id="step1-label" class="font-medium text-gray-900">Design</span>
+                <span id="step2-label" class="text-gray-400">Options</span>
+                <span id="step3-label" class="text-gray-400">Contact</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Form -->
+    <form id="order-form" class="max-w-2xl mx-auto px-4 pb-12" novalidate>
+        <!-- Step 1: Design Input -->
+        <div class="step active" id="step1" data-step="1">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <div class="text-center mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Design Your Sleeve</h1>
+                    <p class="text-gray-600">Upload a reference image or describe your idea</p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Input Method Tabs -->
+                    <div class="flex gap-2 bg-gray-100 rounded-xl p-1" role="tablist">
+                        <button type="button" class="tab-btn flex-1 py-3 px-4 rounded-lg text-sm font-medium text-gray-600 transition-all" data-tab="image" role="tab" aria-selected="true">
+                            <svg class="w-5 h-5 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span class="hidden sm:inline">Upload Image</span>
+                        </button>
+                        <button type="button" class="tab-btn flex-1 py-3 px-4 rounded-lg text-sm font-medium text-gray-400 transition-all" data-tab="prompt" role="tab" aria-selected="false">
+                            <svg class="w-5 h-5 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            <span class="hidden sm:inline">Text Prompt</span>
+                        </button>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="tab-panel" id="panel-image" role="tabpanel">
+                        <div class="drop-zone rounded-xl p-8 text-center" id="drop-zone">
+                            <input type="file" id="file-input" accept="image/*" class="hidden" capture="environment">
+                            <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                            <p class="text-gray-600 mb-2">Drag & drop your reference image here</p>
+                            <p class="text-sm text-gray-400">or click to browse</p>
+                            <p class="text-xs text-gray-400 mt-2">PNG, JPG, WEBP up to 10MB</p>
+                        </div>
+                        <div id="image-preview" class="hidden mt-4">
+                            <img id="preview-img" class="preview-img mx-auto rounded-xl shadow-lg" alt="Preview">
+                            <button type="button" class="mt-3 text-sm text-pink-600 hover:text-pink-700 font-medium" id="remove-image">Remove image</button>
+                        </div>
+                    </div>
+
+                    <!-- Text Prompt -->
+                    <div class="tab-panel hidden" id="panel-prompt" role="tabpanel">
+                        <textarea id="prompt-input" rows="4" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none" placeholder="Describe your figure design... e.g., 'A cute sleeping cat curled up, minimal style, smooth surfaces'" aria-label="Design prompt"></textarea>
+                        <p class="text-sm text-gray-500 mt-2">Be specific about pose, style, and key features. The AI will generate a 3D model from your description.</p>
+                    </div>
+
+                    <!-- Reference Images (optional) -->
+                    <div class="pt-4 border-t border-gray-100">
+                        <label class="block text-sm font-medium text-gray-700 mb-3">Additional reference images (optional, up to 3)</label>
+                        <div class="drop-zone rounded-xl p-6 text-center" id="refs-drop-zone">
+                            <input type="file" id="refs-input" accept="image/*" multiple class="hidden">
+                            <svg class="w-10 h-10 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
+                            <p class="text-gray-600">Add more angles or style references</p>
+                        </div>
+                        <div id="refs-preview" class="grid grid-cols-3 gap-3 mt-3 hidden"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-8 pt-6 border-t border-gray-100">
+                    <button type="button" class="btn-primary px-8 py-3 rounded-xl font-medium" id="next-step-1" disabled>Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2: Options -->
+        <div class="step" id="step2" data-step="2">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Customize Your Sleeve</h2>
+                    <p class="text-gray-600">Choose colors and configuration</p>
+                </div>
+
+                <div class="space-y-8">
+                    <!-- Figure Style -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-4">Figure Style</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <button type="button" class="pin-config-btn selected relative aspect-square rounded-xl overflow-hidden" data-style="panter" style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-pink-600" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+                                </div>
+                                <div class="absolute bottom-2 left-2 right-2 text-center text-xs font-medium text-gray-700 bg-white/80 backdrop-blur-sm rounded">Panter</div>
+                            </button>
+                            <button type="button" class="pin-config-btn relative aspect-square rounded-xl overflow-hidden" data-style="custom" style="background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                </div>
+                                <div class="absolute bottom-2 left-2 right-2 text-center text-xs font-medium text-gray-500 bg-white/80 backdrop-blur-sm rounded">Custom</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Plinth Color -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-4">Plinth Color</label>
+                        <div class="flex gap-3 flex-wrap">
+                            <button type="button" class="color-swatch selected" data-color="Pembe" style="background: #F28AB4;" title="Pink (default)"></button>
+                            <button type="button" class="color-swatch" data-color="Siyah" style="background: #242225;" title="Black"></button>
+                            <button type="button" class="color-swatch" data-color="Fildisi" style="background: #F4DFC4;" title="Ivory"></button>
+                            <button type="button" class="color-swatch" data-color="Sari" style="background: #F8C32B;" title="Yellow"></button>
+                        </div>
+                        <input type="hidden" name="plinth_color" value="Pembe">
+                    </div>
+
+                    <!-- Pin Configuration -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-4">Pin Configuration (tiers × pins)</label>
+                        <div class="flex gap-3 flex-wrap">
+                            <button type="button" class="pin-config-btn selected" data-pins="8,4,2">Standard (8/4/2)</button>
+                            <button type="button" class="pin-config-btn" data-pins="6,3,1">Compact (6/3/1)</button>
+                            <button type="button" class="pin-config-btn" data-pins="10,5,3">Large (10/5/3)</button>
+                            <button type="button" class="pin-config-btn" data-pins="4,2,1">Mini (4/2/1)</button>
+                        </div>
+                        <input type="hidden" name="pins" value="8,4,2">
+                    </div>
+
+                    <!-- Plinth Height -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-4">Plinth Height</label>
+                        <div class="flex gap-3">
+                            <button type="button" class="pin-config-btn" data-height="2.0">2.0 mm</button>
+                            <button type="button" class="pin-config-btn selected" data-height="3.0">3.0 mm (standard)</button>
+                            <button type="button" class="pin-config-btn" data-height="4.0">4.0 mm</button>
+                        </div>
+                        <input type="hidden" name="plinth_height" value="3.0">
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-gray-100">
+                    <button type="button" class="btn-secondary px-8 py-3 rounded-xl font-medium" id="prev-step-2">Back</button>
+                    <button type="button" class="btn-primary px-8 py-3 rounded-xl font-medium" id="next-step-2">Continue</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Contact -->
+        <div class="step" id="step3" data-step="3">
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+                <div class="text-center mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Delivery Details</h2>
+                    <p class="text-gray-600">We'll send your AR viewer link and print files here</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                        <input type="email" id="email" name="email" required autocomplete="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent" placeholder="you@example.com">
+                    </div>
+
+                    <div>
+                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-2">Special Instructions (optional)</label>
+                        <textarea id="notes" name="notes" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none" placeholder="Any specific requirements, deadlines, or notes..."></textarea>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-pink-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 110 2H9a1 1 0 01-1-1v-3a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+                            <div class="text-sm text-gray-600">
+                                <p class="font-medium text-gray-900">What happens next?</p>
+                                <ol class="list-decimal list-inside mt-1 space-y-1 text-gray-600">
+                                    <li>We generate your 3D model (5-15 min)</li>
+                                    <li>Pipeline prints & renders (20-30 min)</li>
+                                    <li>You receive email with AR viewer + files</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                        <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        <div class="text-sm text-gray-700">
+                            <p class="font-medium">Estimated cost: <span class="text-pink-600 font-bold">~€35-50</span> (includes printing & shipping)</p>
+                            <p class="mt-1">Final price confirmed before production starts.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-gray-100">
+                    <button type="button" class="btn-secondary px-8 py-3 rounded-xl font-medium" id="prev-step-3">Back</button>
+                    <button type="submit" class="btn-primary px-8 py-3 rounded-xl font-medium" id="submit-btn">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+                            Submit Order
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full text-center">
+            <div class="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Order Submitted!</h3>
+            <p class="text-gray-600 mb-6">Your custom sleeve is being generated. You'll receive an email at <span id="success-email" class="font-medium"></span> within 30-60 minutes with your AR viewer link and print files.</p>
+            <p class="text-sm text-gray-500">Order ID: <span id="success-order-id" class="font-mono"></span></p>
+            <button type="button" class="mt-6 btn-primary w-full py-3 rounded-xl font-medium" onclick="closeModal()">Done</button>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script>
+        // State
+        let currentStep = 1;
+        const steps = ['step1', 'step2', 'step3'];
+        let formData = {
+            inputMethod: 'image',
+            imageFile: null,
+            prompt: '',
+            refFiles: [],
+            style: 'panter',
+            plinthColor: 'Pembe',
+            pins: '8,4,2',
+            plinthHeight: '3.0',
+            email: '',
+            notes: ''
+        };
+
+        // DOM Elements
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const removeImageBtn = document.getElementById('remove-image');
+        const promptInput = document.getElementById('prompt-input');
+        const refsDropZone = document.getElementById('refs-drop-zone');
+        const refsInput = document.getElementById('refs-input');
+        const refsPreview = document.getElementById('refs-preview');
+        const nextBtn1 = document.getElementById('next-step-1');
+        const nextBtn2 = document.getElementById('next-step-2');
+        const prevBtn2 = document.getElementById('prev-step-2');
+        const prevBtn3 = document.getElementById('prev-step-3');
+        const submitBtn = document.getElementById('submit-btn');
+        const emailInput = document.getElementById('email');
+        const orderForm = document.getElementById('order-form');
+        const successModal = document.getElementById('success-modal');
+        const successEmail = document.getElementById('success-email');
+        const successOrderId = document.getElementById('success-order-id');
+        const toastContainer = document.getElementById('toast-container');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgressIndicator();
+            setupDragDrop();
+            setupTabs();
+            setupColorSelection();
+            setupPinConfig();
+            setupPlinthHeight();
+            setupStyleSelection();
+            setupFormValidation();
+        });
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function updateProgressIndicator() {
+            steps.forEach((stepId, i) => {
+                const stepNum = i + 1;
+                const indicator = document.getElementById(`step${stepNum}-indicator`);
+                const label = document.getElementById(`step${stepNum}-label`);
+                const line = i < 2 ? document.getElementById(`line${stepNum}`) : null;
+
+                if (stepNum < currentStep) {
+                    indicator.classList.add('completed');
+                    indicator.classList.remove('active');
+                    indicator.innerHTML = '<svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>';
+                    if (line) line.classList.add('completed');
+                    if (label) label.classList.remove('font-medium', 'text-gray-900'); label.classList.add('text-gray-400');
+                } else if (stepNum === currentStep) {
+                    indicator.classList.add('active');
+                    indicator.classList.remove('completed');
+                    indicator.textContent = stepNum;
+                    if (line) line.classList.remove('completed');
+                    if (label) label.classList.add('font-medium', 'text-gray-900'); label.classList.remove('text-gray-400');
+                } else {
+                    indicator.classList.remove('active', 'completed');
+                    indicator.textContent = stepNum;
+                    if (line) line.classList.remove('completed');
+                    if (label) label.classList.remove('font-medium', 'text-gray-900'); label.classList.add('text-gray-400');
+                }
+            });
+        }
+
+        function goToStep(step) {
+            steps.forEach(s => document.getElementById(s).classList.remove('active'));
+            document.getElementById(`step${step}`).classList.add('active');
+            currentStep = step;
+            updateProgressIndicator();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setupDragDrop() {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                refsDropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+                refsDropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+                refsDropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            dropZone.addEventListener('drop', handleDrop, false);
+            refsDropZone.addEventListener('drop', handleRefsDrop, false);
+
+            fileInput.addEventListener('change', handleFileSelect);
+            refsInput.addEventListener('change', handleRefsSelect);
+            removeImageBtn.addEventListener('click', clearImage);
+        }
+
+        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+        function highlight(e) { e.target.closest('.drop-zone').classList.add('active'); }
+        function unhighlight(e) { e.target.closest('.drop-zone').classList.remove('active'); }
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) handleFiles(files);
+        }
+
+        function handleRefsDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) handleRefsFiles(files);
+        }
+
+        function handleFileSelect(e) { handleFiles(e.target.files); }
+        function handleRefsSelect(e) { handleRefsFiles(e.target.files); }
+
+        function handleFiles(files) {
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                showToast('File too large (max 10MB)', 'error');
+                return;
+            }
+            formData.imageFile = file;
+            formData.inputMethod = 'image';
+            formData.prompt = '';
+            promptInput.value = '';
+            showImagePreview(file);
+            validateStep1();
+        }
+
+        function handleRefsFiles(files) {
+            const validFiles = Array.from(files).filter(f => f.type.startsWith('image/') && f.size <= 10 * 1024 * 1024).slice(0, 3);
+            formData.refFiles = validFiles;
+            showRefsPreview(validFiles);
+        }
+
+        function showImagePreview(file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                previewImg.src = e.target.result;
+                dropZone.classList.add('hidden');
+                imagePreview.classList.remove('hidden');
+                dropZone.classList.remove('has-file');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function showRefsPreview(files) {
+            refsPreview.innerHTML = '';
+            files.forEach((file, i) => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const div = document.createElement('div');
+                    div.className = 'relative aspect-square rounded-lg overflow-hidden';
+                    div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover"><button type="button" class="absolute top-1 right-1 w-6 h-6 bg-black/50 text-white rounded-full hover:bg-black/70" data-idx="${i}">×</button>`;
+                    refsPreview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
+            refsPreview.classList.remove('hidden');
+            refsDropZone.classList.add('hidden');
+        }
+
+        function clearImage() {
+            formData.imageFile = null;
+            formData.inputMethod = 'image';
+            fileInput.value = '';
+            previewImg.src = '';
+            imagePreview.classList.add('hidden');
+            dropZone.classList.remove('hidden');
+            validateStep1();
+        }
+
+        function setupTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const panels = document.querySelectorAll('.tab-panel');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tab = btn.dataset.tab;
+                    tabBtns.forEach(b => {
+                        b.classList.toggle('text-gray-600', b !== btn);
+                        b.classList.toggle('text-gray-400', b === btn);
+                        b.classList.toggle('bg-white', b === btn);
+                        b.classList.toggle('shadow-sm', b === btn);
+                        b.setAttribute('aria-selected', b === btn);
+                    });
+                    panels.forEach(p => p.classList.toggle('hidden', p.id !== `panel-${tab}`));
+                    formData.inputMethod = tab;
+                    validateStep1();
+                });
+            });
+        }
+
+        function setupColorSelection() {
+            document.querySelectorAll('.color-swatch').forEach(swatch => {
+                swatch.addEventListener('click', () => {
+                    document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('selected'));
+                    swatch.classList.add('selected');
+                    formData.plinthColor = swatch.dataset.color;
+                    document.querySelector('input[name="plinth_color"]').value = formData.plinthColor;
+                });
+            });
+        }
+
+        function setupPinConfig() {
+            document.querySelectorAll('[data-pins]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-pins]').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    formData.pins = btn.dataset.pins;
+                    document.querySelector('input[name="pins"]').value = formData.pins;
+                });
+            });
+        }
+
+        function setupPlinthHeight() {
+            document.querySelectorAll('[data-height]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-height]').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    formData.plinthHeight = btn.dataset.height;
+                    document.querySelector('input[name="plinth_height"]').value = formData.plinthHeight;
+                });
+            });
+        }
+
+        function setupStyleSelection() {
+            document.querySelectorAll('[data-style]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('[data-style]').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    formData.style = btn.dataset.style;
+                });
+            });
+        }
+
+        function validateStep1() {
+            const hasImage = formData.imageFile !== null;
+            const hasPrompt = formData.prompt.trim() !== '';
+            const isValid = (formData.inputMethod === 'image' && hasImage) || (formData.inputMethod === 'prompt' && hasPrompt);
+            nextBtn1.disabled = !isValid;
+        }
+
+        function setupFormValidation() {
+            promptInput.addEventListener('input', () => {
+                formData.prompt = promptInput.value;
+                validateStep1();
+            });
+
+            emailInput.addEventListener('input', () => {
+                formData.email = emailInput.value;
+            });
+
+            document.getElementById('notes').addEventListener('input', (e) => {
+                formData.notes = e.target.value;
+            });
+
+            nextBtn1.addEventListener('click', () => goToStep(2));
+            nextBtn2.addEventListener('click', () => goToStep(3));
+            prevBtn2.addEventListener('click', () => goToStep(1));
+            prevBtn3.addEventListener('click', () => goToStep(2));
+
+            orderForm.addEventListener('submit', handleSubmit);
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            if (!formData.email || !formData.email.includes('@')) {
+                showToast('Please enter a valid email', 'error');
+                emailInput.focus();
+                return;
+            }
+
+            if ((formData.inputMethod === 'image' && !formData.imageFile) || (formData.inputMethod === 'prompt' && !formData.prompt)) {
+                showToast('Please provide a design input', 'error');
+                goToStep(1);
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+
+            const orderId = 'ORD-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+            // Simulate API call
+            try {
+                // In production, this would call your webhook endpoint
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        order_id: orderId,
+                        ...formData,
+                        imageFile: formData.imageFile ? 'base64_placeholder' : null,
+                        refFiles: formData.refFiles.map(f => 'base64_placeholder')
+                    })
+                });
+
+                // For demo, simulate success
+                await new Promise(r => setTimeout(r, 1500));
+                throw new Error('Demo mode - simulated success');
+
+            } catch (err) {
+                // Demo success
+                showSuccessModal(orderId);
+            }
+        }
+
+        function showSuccessModal(orderId) {
+            successEmail.textContent = formData.email;
+            successOrderId.textContent = orderId;
+            successModal.classList.remove('hidden');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Submit Order</span>';
+        }
+
+        function closeModal() {
+            successModal.classList.add('hidden');
+            // Reset form
+            orderForm.reset();
+            goToStep(1);
+            formData = {
+                inputMethod: 'image',
+                imageFile: null,
+                prompt: '',
+                refFiles: [],
+                style: 'panter',
+                plinthColor: 'Pembe',
+                pins: '8,4,2',
+                plinthHeight: '3.0',
+                email: '',
+                notes: ''
+            };
+            clearImage();
+            promptInput.value = '';
+            refsPreview.innerHTML = '';
+            refsPreview.classList.add('hidden');
+            refsDropZone.classList.remove('hidden');
+            document.querySelectorAll('.color-swatch, [data-pins], [data-height], [data-style], .pin-config-btn').forEach(el => el.classList.remove('selected'));
+            document.querySelector('[data-color="Pembe"]').classList.add('selected');
+            document.querySelector('[data-pins="8,4,2"]').classList.add('selected');
+            document.querySelector('[data-height="3.0"]').classList.add('selected');
+            document.querySelector('[data-style="panter"]').classList.add('selected');
+            validateStep1();
+        }
+    </script>
+</body>
+</html>

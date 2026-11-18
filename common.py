@@ -13,7 +13,7 @@ from shapely.geometry import Polygon, MultiPolygon, Point
 from shapely.ops import unary_union
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, '..', '..'))
+ROOT = os.path.abspath(HERE)
 sys.path.insert(0, HERE)
 import io3mf  # noqa: E402
 

@@ -1,0 +1,11 @@
+{
+  "order_id": "ORD-TEST1234",
+  "email": "test@example.com",
+  "inputMethod": "prompt",
+  "prompt": "A cute sleeping fox curled up, minimal style, smooth surfaces, 3D printable",
+  "style": "custom",
+  "plinthColor": "Fildisi",
+  "pins": "6,3,1",
+  "plinthHeight": "3.0",
+  "notes": "Test order from CLI"
+}
