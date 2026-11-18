@@ -1,0 +1,164 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "u2Lighter Design Pack v1",
+  "type": "object",
+  "required": ["figure_id", "source", "assets", "geometry_overrides", "render_overrides", "marketing"],
+  "additionalProperties": false,
+  "properties": {
+    "figure_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+(_v\\d+)?$",
+      "description": "Unique identifier for this figure design (e.g., 'panter_v1', 'dragon_v2')"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["meshy", "higgsfield", "manual", "bambu_studio"],
+      "description": "Origin of the 3D model"
+    },
+    "assets": {
+      "type": "object",
+      "required": ["model_3mf"],
+      "additionalProperties": false,
+      "properties": {
+        "model_3mf": {
+          "type": "string",
+          "description": "Path to the source 3MF file (relative to project root or absolute). Will be unzipped to work/3mf/ by the pipeline."
+        },
+        "textures": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Optional texture files referenced by the model"
+        },
+        "reference_images": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Reference photos/renders for design intent"
+        }
+      }
+    },
+    "geometry_overrides": {
+      "type": "object",
+      "description": "Overrides for config.json case/stand/lighter parameters. Any key not provided falls back to config.json defaults.",
+      "additionalProperties": false,
+      "properties": {
+        "lighter": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "base_long": { "type": "number", "minimum": 10, "maximum": 50, "description": "Lighter base long axis (mm)" },
+            "base_short": { "type": "number", "minimum": 5, "maximum": 30, "description": "Lighter base short axis (mm)" },
+            "height_total": { "type": "number", "minimum": 40, "maximum": 80, "description": "Total lighter height (mm)" },
+            "sleeve_wall_top": { "type": "number", "minimum": 30, "maximum": 70, "description": "Height where sleeve wall ends (mm)" }
+          }
+        },
+        "case": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "z_cut": { "type": ["string", "number"], "description": "Cut plane Z in source coords. 'auto' or mm value." },
+            "growth_rate_threshold": { "type": "number", "minimum": 10, "maximum": 200, "description": "dA/dz threshold for auto z_cut (mm²/mm)" },
+            "plinth_height": { "type": "number", "minimum": 1.0, "maximum": 10.0, "description": "Plinth height (mm)" },
+            "plinth_outset": { "type": "number", "minimum": 0.0, "maximum": 0.5, "description": "Plinth footprint outset (mm)" },
+            "plinth_default_colour": { "type": "string", "description": "Plinth bottom colour (material name from model)" },
+            "plinth_side_colour": { "type": "string", "enum": ["inherit", "Pembe", "Siyah", "Fildisi", "Sari"], "description": "Plinth side wall colour rule" },
+            "hole_diameter": { "type": "number", "minimum": 2.0, "maximum": 6.0, "description": "Pin hole diameter (mm)" },
+            "hole_chamfer": { "type": "number", "minimum": 0.0, "maximum": 1.0, "description": "45° chamfer at hole mouth (mm)" },
+            "hole_blind_depth": { "type": "number", "minimum": 1.0, "maximum": 10.0, "description": "Blind hole depth when not through (mm)" },
+            "hole_through_if_floor_leq": { "type": "number", "minimum": 0.0, "maximum": 10.0, "description": "Use through hole if floor thickness <= this (mm)" },
+            "hole_axis": { "type": ["string", "array"], "description": "'auto' or [x, y] in source coords" },
+            "decimate_target_tris": { "type": "integer", "minimum": 10000, "maximum": 500000, "description": "Target triangle count for low-poly preview" }
+          }
+        },
+        "stand": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "pin_diameter": { "type": "number", "minimum": 2.0, "maximum": 5.0 },
+            "pin_height": { "type": "number", "minimum": 1.5, "maximum": 5.0 },
+            "pin_top_chamfer": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+            "tiers": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 5,
+              "items": {
+                "type": "object",
+                "required": ["name", "pins"],
+                "additionalProperties": false,
+                "properties": {
+                  "name": { "type": "string", "enum": ["alt", "orta", "ust", "extra1", "extra2"] },
+                  "pins": { "type": "integer", "minimum": 1, "maximum": 16 }
+                }
+              }
+            },
+            "tier_pitch": { "type": "number", "minimum": 50, "maximum": 150 },
+            "plate_thickness": { "type": "number", "minimum": 3.0, "maximum": 8.0 },
+            "min_case_gap": { "type": "number", "minimum": 1.0, "maximum": 10.0 },
+            "column_diameter": { "type": "number", "minimum": 10, "maximum": 30 },
+            "hex_across_flats": { "type": "number", "minimum": 6, "maximum": 16 },
+            "joint_clearance": { "type": "number", "minimum": 0.05, "maximum": 0.5 },
+            "spigot_length": { "type": "number", "minimum": 8, "maximum": 20 },
+            "sign_width": { "type": "number", "minimum": 40, "maximum": 120 },
+            "sign_height": { "type": "number", "minimum": 20, "maximum": 80 },
+            "sign_thickness": { "type": "number", "minimum": 1.0, "maximum": 10.0 },
+            "sign_tilt_deg": { "type": "number", "minimum": 0, "maximum": 45 },
+            "sign_gap_above_top_plate": { "type": "number", "minimum": 10, "maximum": 200 }
+          }
+        }
+      }
+    },
+    "render_overrides": {
+      "type": "object",
+      "description": "Overrides for render pipeline arguments (turntable.py). Any key not provided uses pipeline defaults.",
+      "additionalProperties": false,
+      "properties": {
+        "start_phi": { "type": "number", "minimum": -180, "maximum": 180, "description": "Start angle of label vs camera (deg). Negative = show head side." },
+        "direction": { "type": "integer", "enum": [-1, 1], "description": "-1 = clockwise from above (reference), +1 = ccw" },
+        "profile": { "type": "string", "enum": ["label", "constant"], "description": "Speed profile for case turntable" },
+        "lens": { "type": "number", "minimum": 50, "maximum": 200, "description": "Camera focal length (mm)" },
+        "elev": { "type": "number", "minimum": 0, "maximum": 30, "description": "Camera pitch down (deg)" },
+        "light_scale": { "type": "number", "minimum": 0.1, "maximum": 2.0, "description": "Global light exposure multiplier" },
+        "margin": { "type": "number", "minimum": 0.02, "maximum": 0.2, "description": "Frame safety margin fraction" },
+        "seconds": { "type": "number", "minimum": 3, "maximum": 20, "description": "Clip length (seconds)" },
+        "samples": { "type": "integer", "minimum": 16, "maximum": 1024, "description": "Cycles max samples (0 = mode default)" },
+        "noise": { "type": "number", "minimum": 0.005, "maximum": 0.1, "description": "Adaptive sampling threshold" },
+        "res": { "type": "string", "pattern": "^\\d+x\\d+$", "description": "Output resolution WxH" },
+        "pct": { "type": "integer", "minimum": 10, "maximum": 100, "description": "Resolution percentage" },
+        "no_lighter": { "type": "boolean", "description": "Hide lighter in render" },
+        "case": { "type": "string", "description": "Force specific case file path (overrides auto)" }
+      }
+    },
+    "marketing": {
+      "type": "object",
+      "description": "Marketing asset generation configuration",
+      "additionalProperties": false,
+      "properties": {
+        "hero_angles": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["front", "3-4", "side", "back", "top", "bottom"] },
+          "description": "Angles for hero stills"
+        },
+        "lifestyle_prompts": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Prompts for lifestyle composites (desk, nightstand, gift box, etc.)"
+        },
+        "social_crops": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["1:1", "9:16", "4:5", "16:9"] },
+          "description": "Aspect ratios for social media variants"
+        },
+        "ar_enabled": { "type": "boolean", "default": true, "description": "Generate USDZ/GLB for AR" },
+        "qr_base_url": { "type": "string", "format": "uri", "description": "Base URL for QR codes linking to web viewer" },
+        "branding": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "logo_path": { "type": "string", "description": "Logo overlay for marketing assets" },
+            "tagline": { "type": "string", "description": "Tagline text for composites" },
+            "colors": { "type": "object", "description": "Brand color palette (hex)" }
+          }
+        }
+      }
+    }
+  }
+}

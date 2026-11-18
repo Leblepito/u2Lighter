@@ -1,0 +1,43 @@
+{
+  "description": "Variant matrix for A/B testing. Each key defines an axis of variation. The build_variants.py script generates the Cartesian product of all values.",
+  "variants": {
+    "plinth_colour": {
+      "description": "Plinth bottom colour (material name from model)",
+      "values": ["Pembe", "Siyah", "Fildisi"],
+      "default": "Pembe"
+    },
+    "plinth_height": {
+      "description": "Plinth height in mm",
+      "values": [2.0, 3.0, 4.0],
+      "default": 3.0
+    },
+    "hole_mode": {
+      "description": "Pin hole type: through, blind, or auto",
+      "values": ["through", "blind", "auto"],
+      "default": "auto"
+    },
+    "hole_diameter": {
+      "description": "Pin hole diameter in mm",
+      "values": [3.0, 3.3, 3.5],
+      "default": 3.3
+    },
+    "plinth_outset": {
+      "description": "Plinth footprint outset in mm (avoids zero-width edges)",
+      "values": [0.02, 0.05, 0.1],
+      "default": 0.02
+    },
+    "decimate_target_tris": {
+      "description": "Target triangle count for low-poly preview",
+      "values": [50000, 100000, 200000],
+      "default": 100000
+    }
+  },
+  "filters": {
+    "description": "Optional filters to exclude invalid combinations",
+    "rules": []
+  },
+  "naming": {
+    "pattern": "panter_kilif_v2_{plinth_colour}_{plinth_height}mm_{hole_mode}_{hole_diameter}mm_{plinth_outset}mm_{decimate_target_tris}tris",
+    "sanitize": true
+  }
+}

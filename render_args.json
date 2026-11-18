@@ -1,0 +1,45 @@
+{
+  "--start-phi": -30.0,
+  "--direction": -1,
+  "--profile": "label",
+  "--lens": 100.0,
+  "--elev": 9.0,
+  "--light-scale": 0.25,
+  "--margin": 0.05,
+  "--seconds": 9.0,
+  "--samples": 160,
+  "--noise": 0.02,
+  "--res": "1440x1920",
+  "--pct": 100,
+  "_marketing": {
+    "hero_angles": [
+      "front",
+      "3-4",
+      "side",
+      "back"
+    ],
+    "lifestyle_prompts": [
+      "modern desk setup with mechanical keyboard and coffee",
+      "bedside nightstand with warm lighting and book",
+      "gift box with tissue paper and ribbon",
+      "outdoor patio table with plants and sunglasses"
+    ],
+    "social_crops": [
+      "1:1",
+      "9:16",
+      "4:5"
+    ],
+    "ar_enabled": true,
+    "qr_base_url": "https://u2lighter.com/ar/",
+    "branding": {
+      "logo_path": "branding/logo.svg",
+      "tagline": "Light your style",
+      "colors": {
+        "primary": "#F28AB4",
+        "secondary": "#1A1A2E",
+        "accent": "#FFD700"
+      }
+    }
+  },
+  "_figure_id": "panter_v1"
+}

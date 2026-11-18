@@ -1,0 +1,220 @@
+# u2Lighter Marketing Content Calendar Template
+# Copy this file to marketing/calendar/{figure_id}.yaml and adjust dates
+
+figure_id: "panter_v2"
+launch_date: "2026-12-01"  # ISO format, D-0
+
+# Product info for templates
+product:
+  name: "Panter YENİ YAKI v2"
+  tagline: "Light your style"
+  price_eur: 77.30
+  ar_viewer_url: "https://u2lighter.com/ar/panter_v2"
+  purchase_url: "https://shop.u2lighter.com/panter-v2"
+
+# Content calendar: relative to launch_date
+calendar:
+  - day: -14
+    title: "Content prep begins"
+    tasks:
+      - "Verify all marketing assets in output/marketing/{figure_id}/"
+      - "Schedule social posts in Buffer/Later"
+      - "Prepare email sequences in Klaviyo"
+      - "Set up Meta/TikTok ad campaigns (draft)"
+
+  - day: -7
+    title: "Teaser drop"
+    channels:
+      instagram:
+        - type: "reel"
+          asset: "social/reels_9_16.mp4"  # 3-sec teaser clip
+          caption_template: "teaser_reel.txt"
+          hashtags: ["#u2lighter", "#comingsoon", "#3dprinting", "#customdesign"]
+      tiktok:
+        - type: "video"
+          asset: "social/reels_9_16.mp4"
+          caption_template: "teaser_tiktok.txt"
+      email:
+        - segment: "vip"
+          template: "teaser_email.html"
+          subject: "Something special is coming... 🎁"
+
+  - day: -3
+    title: "Making-of content"
+    channels:
+      instagram:
+        - type: "carousel"
+          assets:
+            - "social/hero_34_1_1.png"
+            - "social/hero_side_1_1.png"
+            - "social/hero_front_1_1.png"
+            - "social/qr_panter_v2.png"
+          caption_template: "making_of_carousel.txt"
+        - type: "reel"
+          asset: "social/reels_9_16.mp4"  # timelapse print
+          caption_template: "making_of_reel.txt"
+      tiktok:
+        - type: "video"
+          asset: "social/reels_9_16.mp4"
+          caption_template: "making_of_tiktok.txt"
+      youtube_shorts:
+        - asset: "social/reels_9_16.mp4"
+
+  - day: 0
+    title: "LAUNCH DAY 🚀"
+    channels:
+      instagram:
+        - type: "carousel"
+          assets:
+            - "social/hero_front_1_1.png"
+            - "social/hero_34_1_1.png"
+            - "social/hero_side_1_1.png"
+            - "social/hero_back_1_1.png"
+            - "social/qr_panter_v2.png"
+          caption_template: "launch_carousel.txt"
+          cta: "Link in bio to customize yours"
+        - type: "reel"
+          asset: "social/reels_9_16.mp4"
+          caption_template: "launch_reel.txt"
+        - type: "story"
+          assets: ["social/hero_front_9_16.png", "social/qr_panter_v2.png"]
+          interactive: ["link_sticker", "poll"]
+      tiktok:
+        - type: "video"
+          asset: "social/reels_9_16.mp4"
+          caption_template: "launch_tiktok.txt"
+          cta: "Link in bio"
+      email:
+        - segment: "all"
+          template: "launch_email.html"
+          subject: "🎉 Panter v2 is here — design your own"
+        - segment: "vip"
+          template: "launch_email_vip.html"
+          subject: "Early access: Panter v2 + 15% off"
+      shopify:
+        - update_product: true
+        - hero_image: "social/hero_front_1_1.png"
+        - gallery: ["social/hero_34_1_1.png", "social/hero_side_1_1.png", "social/hero_back_1_1.png"]
+        - ar_embed: true
+        - video: "video/panter_v2_360.mp4"
+      meta_ads:
+        - campaign: "launch_panter_v2"
+          creatives:
+            - format: "carousel"
+              images: ["social/hero_front_1_1.png", "social/hero_34_1_1.png", "social/hero_side_1_1.png"]
+              headline: "Design Your Own Lighter Sleeve"
+              primary_text: "Upload a photo → get a 3D printed sleeve in 48h"
+              cta: "SHOP_NOW"
+            - format: "video"
+              video: "social/reels_9_16.mp4"
+              headline: "Custom 3D Printed Sleeve"
+              primary_text: "Your design, printed & shipped"
+              cta: "LEARN_MORE"
+      tiktok_ads:
+        - creative: "social/reels_9_16.mp4"
+          caption: "Your design, 3D printed 🔥 #u2lighter #custom"
+
+  - day: 1
+    title: "Launch day follow-up"
+    channels:
+      instagram:
+        - type: "story"
+          content: "First orders shipping! 📦"
+      email:
+        - segment: "abandoned_cart"
+          template: "abandoned_cart.html"
+          delay_hours: 4
+
+  - day: 3
+    title: "UGC request"
+    channels:
+      instagram:
+        - type: "story"
+          content: "Show us your setup! Tag @u2lighter for a repost 📸"
+          interactive: ["mention_sticker", "hashtag_sticker"]
+        - type: "post"
+          content: "Best UGC gets featured + free stand!"
+      email:
+        - segment: "customers"
+          template: "ugc_request.html"
+          subject: "Show us your Panter! 📸 Win a free stand"
+
+  - day: 7
+    title: "Bundle promo"
+    channels:
+      instagram:
+        - type: "carousel"
+          assets: ["social/hero_front_1_1.png", "social/stand_dolu_hero.png"]
+          caption: "Complete the look — Case + Stand bundle 🎁"
+        - type: "reel"
+          asset: "video/stand_dolu_360.mp4"
+      email:
+        - segment: "case_buyers"
+          template: "bundle_promo.html"
+          subject: "Complete your setup — Stand 20% off"
+
+  - day: 14
+    title: "Social proof"
+    channels:
+      instagram:
+        - type: "reel"
+          content: "Customer photos compilation 📸"
+      email:
+        - segment: "all"
+          template: "social_proof.html"
+          subject: "See how others styled their Panter"
+
+  - day: 30
+    title: "Retention / Repeat"
+    channels:
+      email:
+        - segment: "customers_30d"
+          template: "repeat_purchase.html"
+          subject: "Design another one? 🎁 10% off your next custom"
+
+# Asset requirements checklist (auto-verified by asset_generator.py)
+asset_requirements:
+  video:
+    - "social/reels_9_16.mp4"  # 9:16, 9-15s, <100MB
+    - "video/panter_v2_360.mp4"  # 16:9, full turntable
+    - "video/stand_dolu_360.mp4"
+  stills_1_1:
+    - "social/hero_front_1_1.png"
+    - "social/hero_34_1_1.png"
+    - "social/hero_side_1_1.png"
+    - "social/hero_back_1_1.png"
+  stills_4_5:
+    - "social/hero_front_4_5.png"
+    - "social/hero_34_4_5.png"
+    - "social/hero_side_4_5.png"
+  stills_9_16:
+    - "social/hero_front_9_16.png"
+    - "social/hero_34_9_16.png"
+    - "social/qr_panter_v2.png"
+  web:
+    - "web/panter_v2.glb"
+    - "web/viewer.html"
+    - "ar/panter_v2.usdz"
+  qr:
+    - "qr/panter_v2_qr.png"
+  contact_sheet:
+    - "contact_sheet.png"
+
+# Caption templates (stored in marketing/captions/)
+caption_templates:
+  - teaser_reel.txt
+  - teaser_tiktok.txt
+  - teaser_email.html
+  - making_of_carousel.txt
+  - making_of_reel.txt
+  - making_of_tiktok.txt
+  - launch_carousel.txt
+  - launch_reel.txt
+  - launch_tiktok.txt
+  - launch_email.html
+  - launch_email_vip.html
+  - ugc_request.html
+  - bundle_promo.html
+  - social_proof.html
+  - repeat_purchase.html
+  - abandoned_cart.html
