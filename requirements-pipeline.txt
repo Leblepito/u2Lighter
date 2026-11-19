@@ -1,0 +1,8 @@
+numpy
+scipy
+trimesh
+manifold3d
+shapely
+matplotlib
+pillow
+fast_simplification

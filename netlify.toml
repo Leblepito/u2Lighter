@@ -1,0 +1,21 @@
+# Netlify: serves automation/custom_order_form.html and the order webhook function.
+[build]
+  publish = "automation"
+  functions = "netlify/functions"
+  command = "echo 'static site, no build step'"
+
+[functions]
+  node_bundler = "esbuild"
+
+# Form posts to /api/orders -> webhook function
+[[redirects]]
+  from = "/api/orders"
+  to = "/.netlify/functions/webhook"
+  status = 200
+  force = true
+
+# Site root shows the order form
+[[redirects]]
+  from = "/"
+  to = "/custom_order_form.html"
+  status = 200

@@ -1,0 +1,62 @@
+name: Custom Order
+
+# Triggered by the Netlify webhook (repository_dispatch, event_type "custom_order")
+# or manually from the Actions tab with an order id.
+run-name: Custom Order custom_${{ github.event.client_payload.order_id || inputs.order_id }}
+
+on:
+  repository_dispatch:
+    types: [custom_order]
+  workflow_dispatch:
+    inputs:
+      order_id:
+        description: 'Order ID (e.g. ORD-ABC12345)'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  generate:
+    name: Generate model + design pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      ORDER_ID: ${{ github.event.client_payload.order_id || inputs.order_id }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      MESHY_API_KEY: ${{ secrets.MESHY_API_KEY }}
+      PYTHONIOENCODING: utf-8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install "httpx>=0.25" "trimesh>=4.0" numpy networkx lxml
+
+      - name: Validate order id
+        run: |
+          if [[ ! "$ORDER_ID" =~ ^ORD-[A-Z0-9]{4,24}$ ]]; then
+            echo "Invalid order id: $ORDER_ID"; exit 1
+          fi
+          echo "Processing $ORDER_ID"
+
+      - name: Meshy.ai -> model -> design pack
+        run: python automation/custom_order_worker.py "$ORDER_ID"
+
+      - name: Upload order artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: custom_${{ env.ORDER_ID }}
+          path: |
+            work/custom/
+            design_pack/custom_*.json
+          if-no-files-found: warn
+          retention-days: 90
