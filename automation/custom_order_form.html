@@ -60,7 +60,7 @@
     </div>
 
     <!-- Main Form -->
-    <form id="order-form" class="max-w-2xl mx-auto px-4 pb-12" novalidate data-webhook-endpoint="https://api.u2lighter.com/api/orders">
+    <form id="order-form" class="max-w-2xl mx-auto px-4 pb-12" novalidate data-webhook-endpoint="/api/orders">
         <!-- Step 1: Design Input -->
         <div class="step active" id="step1" data-step="1">
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
@@ -77,14 +77,14 @@
                             <span class="hidden sm:inline">Upload Image</span>
                         </button>
                         <button type="button" class="tab-btn flex-1 py-3 px-4 rounded-lg text-sm font-medium text-gray-400 transition-all" data-tab="prompt" role="tab" aria-selected="false">
-                            <svg class="w-5 h-5 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                            <svg class="w-5 h-5 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.720C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
                             <span class="hidden sm:inline">Text Prompt</span>
                         </button>
                     </div>
 
                     <!-- Image Upload -->
                     <div class="tab-panel" id="panel-image" role="tabpanel">
-                        <div class="drop-zone rounded-xl p-8 text-center" id="drop-zone">
+                        <div class="drop-zone rounded-xl p-8 text-center cursor-pointer" id="drop-zone">
                             <input type="file" id="file-input" accept="image/*" class="hidden" capture="environment">
                             <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                             <p class="text-gray-600 mb-2">Drag & drop your reference image here</p>
@@ -106,7 +106,7 @@
                     <!-- Reference Images (optional) -->
                     <div class="pt-4 border-t border-gray-100">
                         <label class="block text-sm font-medium text-gray-700 mb-3">Additional reference images (optional, up to 3)</label>
-                        <div class="drop-zone rounded-xl p-6 text-center" id="refs-drop-zone">
+                        <div class="drop-zone rounded-xl p-6 text-center cursor-pointer" id="refs-drop-zone">
                             <input type="file" id="refs-input" accept="image/*" multiple class="hidden">
                             <svg class="w-10 h-10 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/></svg>
                             <p class="text-gray-600">Add more angles or style references</p>
@@ -226,7 +226,7 @@
                     </div>
 
                     <div class="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-                        <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        <svg class="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.360 2.722-1.360 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                         <div class="text-sm text-gray-700">
                             <p class="font-medium">Estimated cost: <span class="text-pink-600 font-bold">~€35-50</span> (includes printing & shipping)</p>
                             <p class="mt-1">Final price confirmed before production starts.</p>
@@ -279,6 +279,8 @@
             email: '',
             notes: ''
         };
+
+        const SUBMIT_BTN_HTML = '<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Submit Order</span>';
 
         // DOM Elements
         const dropZone = document.getElementById('drop-zone');
@@ -380,6 +382,10 @@
 
             dropZone.addEventListener('drop', handleDrop, false);
             refsDropZone.addEventListener('drop', handleRefsDrop, false);
+
+            // "or click to browse"
+            dropZone.addEventListener('click', () => fileInput.click());
+            refsDropZone.addEventListener('click', () => refsInput.click());
 
             fileInput.addEventListener('change', handleFileSelect);
             refsInput.addEventListener('change', handleRefsSelect);
@@ -559,9 +565,41 @@
             orderForm.addEventListener('submit', handleSubmit);
         }
 
+        // Read an image file, downscale it (keeps the request under the serverless body limit)
+        // and return a JPEG data URL.
+        function fileToDataUrl(file, maxDim) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Could not read image'));
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onerror = () => resolve(reader.result);
+                    img.onload = () => {
+                        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(img.width * scale));
+                        canvas.height = Math.max(1, Math.round(img.height * scale));
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.85));
+                    };
+                    img.src = reader.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function resetSubmitButton() {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = SUBMIT_BTN_HTML;
+        }
+
         async function handleSubmit(e) {
             e.preventDefault();
 
+            formData.email = emailInput.value.trim();
             if (!formData.email || !formData.email.includes('@')) {
                 showToast('Please enter a valid email', 'error');
                 emailInput.focus();
@@ -579,10 +617,12 @@
 
             const orderId = 'ORD-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 6).toUpperCase();
 
-            // Simulate API call
             try {
-                // In production, this would call your webhook endpoint
-                const webhookEndpoint = document.getElementById('order-form').dataset.webhookEndpoint || '/api/orders';
+                const webhookEndpoint = orderForm.dataset.webhookEndpoint || '/api/orders';
+                const imageData = (formData.inputMethod === 'image' && formData.imageFile)
+                    ? await fileToDataUrl(formData.imageFile, 1024)
+                    : null;
+                const refData = await Promise.all(formData.refFiles.map(f => fileToDataUrl(f, 512)));
 
                 const response = await fetch(webhookEndpoint, {
                     method: 'POST',
@@ -590,18 +630,22 @@
                     body: JSON.stringify({
                         order_id: orderId,
                         ...formData,
-                        imageFile: formData.imageFile ? 'base64_placeholder' : null,
-                        refFiles: formData.refFiles.map(f => 'base64_placeholder')
+                        prompt: formData.inputMethod === 'prompt' ? formData.prompt : '',
+                        imageFile: imageData,
+                        refFiles: refData
                     })
                 });
 
-                // For demo, simulate success
-                await new Promise(r => setTimeout(r, 1500));
-                throw new Error('Demo mode - simulated success');
-
+                let result = {};
+                try { result = await response.json(); } catch (_) { /* non-JSON response */ }
+                if (!response.ok) {
+                    throw new Error(result.error || `Server error (${response.status})`);
+                }
+                showSuccessModal(result.order_id || orderId);
             } catch (err) {
-                // Demo success
-                showSuccessModal(orderId);
+                console.error(err);
+                showToast('Order could not be submitted: ' + err.message, 'error');
+                resetSubmitButton();
             }
         }
 
@@ -609,8 +653,7 @@
             successEmail.textContent = formData.email;
             successOrderId.textContent = orderId;
             successModal.classList.remove('hidden');
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>Submit Order</span>';
+            resetSubmitButton();
         }
 
         function closeModal() {
